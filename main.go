@@ -14,14 +14,18 @@ type human struct {
 }
 
 func (s human) PrintHuman() {
-	fmt.Print("Age: ", s.age, " Sex: ", s.sex)
+	fmt.Print("Age: ", s.age, " Sex: ", s.sex, " Has bred: ", s.HasBred)
 	fmt.Println("")
+}
+
+func remove(slice []human, s int) []human {
+	return append(slice[:s], slice[s+1:]...)
 }
 
 func (self *human) check() {
 	self.HasBred = false
 	self.age = self.age + 10
-	if self.age >= 10 && self.age < 50 {
+	if self.age >= 10 && self.age <= 50 {
 		rand.Seed(time.Now().UnixNano())
 		self.power = self.power + rand.Intn(10)
 	} else if self.age < 10 {
@@ -45,19 +49,10 @@ func breed(humans *[]human) {
 }
 
 func (s *human) CheckForBreeding(h *human, humans *[]human) {
-	/*if s.age <= 10 && s.age >= 50 {
-		return
-	}
-	if s.sex == h.sex {
-		return
-	}
-	if s.HasBred == true {
-		return
-	}*/
-	if !(s.age <= 10 || s.age >= 50) && s.sex != h.sex && s.HasBred == false {
-		breed(humans)
+	if (s.age > 10 && s.age < 50) && (h.age > 10 && h.age < 50) && (s.sex != h.sex) && (s.HasBred == false && h.HasBred == false) {
 		s.HasBred = true
 		h.HasBred = true
+		breed(humans)
 	}
 }
 
@@ -71,7 +66,7 @@ func main() {
 	breed(&Humans)
 	breed(&Humans)
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 4; i++ {
 		for j := 0; j < len(Humans); j++ {
 			Humans[j].check()
 		}
